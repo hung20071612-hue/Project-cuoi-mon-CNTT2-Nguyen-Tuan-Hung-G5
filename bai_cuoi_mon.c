@@ -9,14 +9,14 @@ struct Room {
 	int status; 
 };
 struct Room list[MAX] = {
-	{"101", 1, 350000, 0},
+	{"101", 1, 350000, 1},
 	{"234", 2, 400000, 1},
-	{"135", 1, 200000, 0},
+	{"135", 1, 200000, 1},
 	{"132", 2, 300000, 0},
 	{"173", 2, 670000, 1},
 	{"720", 1, 540000, 1},
 	{"479", 2, 720000, 1},
-	{"179", 1, 150000, 0},
+	{"179", 1, 150000, 1},
 	{"610", 1, 270000, 1},
 	{"528", 2, 360000, 0},
 	{"427", 1, 580000, 1},
@@ -37,6 +37,7 @@ void update_room();
 void lock_room();
 void show_room();
 void show_empty();
+void sort_down();
 int main(){
 	int choice;
 	do{
@@ -61,6 +62,7 @@ int main(){
 				show_empty();
 				break;
 			case 6:
+				sort_down();
 				break;
 			case 7:
 				break;
@@ -73,7 +75,7 @@ int main(){
 	}while(1);
 	return 0;
 }
-void display(){
+void display(){// hien thi menu
 	printf("+-----------------------------Mini Hotel-----------------------------+\n");
 	printf("|1. Them phong moi                                                   |\n");
 	printf("|2. Cap nhat phong                                                   |\n");
@@ -224,17 +226,51 @@ void show_empty(){// hien thi phong trong cua tung loai phong
 			printf("Loi: Vui long chon 1(don) hoac 2(doi)!\n");
 		}
 	}while(cpy_type != 1 && cpy_type != 2);
+	for(int i = 0; i < n; i++){
+		if(list[i].type == cpy_type && list[i].status == 0){
+			flag = 1;
+			}
+		}
+		if(flag == 0){
+				(cpy_type == 1) ? printf("Hien tai khong co trong phong don\n") : printf("Hien tai khong co trong phong doi\n");
+				return;
+			}
 	printf("+--------+-------------------------+--------------------+-----------+\n");
 	printf("|%-5s|%-25s|%-20s|%-11s|\n", "Ma phong", "Loai phong","Gia phong","Trang thai");
 	printf("+--------+-------------------------+--------------------+-----------+\n");
 	for(int i = 0; i < n; i++){
 		if(list[i].type == cpy_type && list[i].status == 0){
-			flag = 1;
 			printf("|%-8s|%-25d|%-16.0lf VND|%-11d|\n", list[i].roomId, list[i].type, list[i].price, list[i].status);
 		}
 	}
 	printf("+--------+-------------------------+--------------------+-----------+\n");
-	if(flag == 0){
-		(cpy_type == 1) ? printf("Hien tai khong co trong phong don\n") : printf("Hien tai khong co trong phong doi\n");
+}
+void sort_down(){// sap xep theo gia giam dan
+	if(n == 0){
+		printf("Danh sach phong trong, khong can sap xep!");
+		return;
 	}
+	char temp2[5];
+	for(int i = 0; i < n; i++){
+		for(int j = 0; j < n - 1 - i; j++){
+			if(list[j].price < list[j+1].price){
+				//gan cac bien vao bien trung gian
+				int temp1 = list[j].price;
+				strcpy(temp2,list[j].roomId);
+				int temp3 = list[j].type;
+				int temp4 = list[j].status;
+				//doi lai vi tri 
+				list[j].price = list[j+1].price;
+				strcpy(list[j].roomId,list[j+1].roomId);
+				list[j].type = list[j+1].type;
+				list[j].status = list[j+1].status;
+				//tra lai gia tri can doi
+				list[j+1].price = temp1;
+				strcpy(list[j+1].roomId,temp2);
+				list[j+1].type = temp3;
+				list[j+1].status = temp4;
+			}
+		}
+	}
+	printf("Da sap xep danh sach phong theo gia giam dan thanh cong!\n");
 }
