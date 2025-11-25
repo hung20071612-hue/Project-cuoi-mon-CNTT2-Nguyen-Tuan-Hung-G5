@@ -201,13 +201,13 @@ void show_room(){// hien danh sach phong
     	getchar();
     	int start = (page_room - 1)*page_size;
     	int end = start + page_size;
-    printf("+--------+-------------------------+--------------------+-----------+\n");
-    printf("|%-5s|%-25s|%-20s|%-11s|\n", "Ma phong", "Loai phong","Gia phong","Trang thai");
-    printf("+--------+-------------------------+--------------------+-----------+\n");
+    printf("+--------+-------------------------+--------------------+------------+\n");
+    printf("|%-5s|%-25s|%-20s|%-12s|\n", "Ma phong", "Loai phong","Gia phong","Trang thai");
+    printf("+--------+-------------------------+--------------------+------------+\n");
     for (int i = start; i < end && i < n; i++) {
-        printf("|%-8s|%-25d|%-16.0lf VND|%-11d|\n", list[i].roomId, list[i].type, list[i].price, list[i].status);
+        printf("|%-8s|%-25d|%-16.0lf VND|%-12d|\n", list[i].roomId, list[i].type, list[i].price, list[i].status);
     }
-    printf("+--------+-------------------------+--------------------+-----------+\n");
+    printf("+--------+-------------------------+--------------------+------------+\n");
     printf("ban co muon thoat khong (y/n): ");
     char page = getchar();
     if(page == 'y' || page == 'Y'){
@@ -273,4 +273,5 @@ void sort_down(){// sap xep theo gia giam dan
 		}
 	}
 	printf("Da sap xep danh sach phong theo gia giam dan thanh cong!\n");
+	show_room();
 }
