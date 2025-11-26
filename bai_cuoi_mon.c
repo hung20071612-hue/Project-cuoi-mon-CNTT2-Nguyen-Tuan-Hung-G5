@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<string.h>
+#include<stdlib.h>
 #define MAX 100
 
 struct Room {
@@ -8,7 +9,7 @@ struct Room {
 	double price;
 	int status; 
 };
-struct Room list[MAX] = {
+struct Room list[] = {
 	{"101", 1, 350000, 1},
 	{"234", 2, 400000, 1},
 	{"135", 1, 200000, 1},
@@ -16,14 +17,14 @@ struct Room list[MAX] = {
 	{"173", 2, 670000, 1},
 	{"720", 1, 540000, 1},
 	{"479", 2, 720000, 1},
-	{"179", 1, 150000, 1},
+	{"179", 1, 150000, 2},
 	{"610", 1, 270000, 1},
 	{"528", 2, 360000, 0},
 	{"427", 1, 580000, 1},
 	{"821", 1, 710000, 1},
 	{"900", 2, 930000, 0}
 };
-int n = 13;
+int n = sizeof(list)/sizeof(list[0]);
 struct Booking {
 	char bookId[20];
 	char roomId[5];
@@ -31,6 +32,8 @@ struct Booking {
 	int days;
 	double totalCost;
 };
+struct Booking list_book[MAX];
+int x = 0;
 void display();
 void add_room();
 void update_room();
@@ -38,7 +41,8 @@ void lock_room();
 void show_room();
 void show_empty();
 void sort_down();
-int main(){
+void book_room();
+int main(){// 
 	int choice;
 	do{
 		display();
@@ -65,6 +69,7 @@ int main(){
 				sort_down();
 				break;
 			case 7:
+				book_room();
 				break;
 			case 8:
 				break;
@@ -137,9 +142,12 @@ void update_room(){// cap nhat thong tin phong
 	find_Id[strcspn(find_Id, "\n")] = 0;
 	for(int i = 0; i < n; i++){
 		if(strcmp(find_Id,list[i].roomId) == 0){
+			printf("loai phong %s: %d\n",find_Id,list[i].type);
+			printf("gia phong %s: %.0lf\n",find_Id,list[i].price);
+			printf("Trang thai phong %s: %d\n",find_Id,list[i].status);
 			flag = 1;
 		do{
-		printf("moi ban nhap loai phong (1/2): ");
+		printf("moi ban nhap loai phong (1/2) phong %s muon cap nhat: ",find_Id);
 		scanf("%d",&list[i].type);
 		getchar();
 		if(list[i].type != 1 && list[i].type != 2){
@@ -147,7 +155,7 @@ void update_room(){// cap nhat thong tin phong
 			}
 		}while(list[i].type != 1 && list[i].type != 2);
 		do{
-		printf("moi ban nhap gia phong %s: ",list[i].roomId);
+		printf("moi ban nhap gia phong %s muon cap nhat: ",list[i].roomId);
 		scanf("%lf",&list[i].price);
 		getchar();
 		if(list[i].price <= 0){
@@ -245,7 +253,7 @@ void show_empty(){// hien thi phong trong cua tung loai phong
 	}
 	printf("+--------+-------------------------+--------------------+-----------+\n");
 }
-void sort_down(){// sap xep theo gia giam dan
+void sort_down(){// sap xep phong theo gia giam dan
 	if(n == 0){
 		printf("Danh sach phong trong, khong can sap xep!");
 		return;
@@ -274,4 +282,76 @@ void sort_down(){// sap xep theo gia giam dan
 	}
 	printf("Da sap xep danh sach phong theo gia giam dan thanh cong!\n");
 	show_room();
+}
+void book_room(){// dat phong 
+	int day,month,year;
+	int flag = 1;
+	do{// kiem tra co thoa man khi nhap ma phong khong?
+		int found = 0;
+		flag = 1;
+		printf("moi ban nhap so phong: ");
+		fgets(list_book[x].roomId, sizeof(list_book[x].roomId), stdin);
+		list_book[x].roomId[strcspn(list_book[x].roomId, "\n")] = 0;
+			for(int i = 0; i < n ; i++){
+				if(strcmp(list_book[x].roomId, list[i].roomId) == 0){
+					found = 1;
+					if(list[i].status == 1){
+						flag = 0;
+						printf("Loi: Phong %s da co khach!\n",list[i].roomId);
+						break;
+					}else if(list[i].status == 2){
+						flag = 0;
+						printf("Loi: Phong %s dang bao tri!\n",list[i].roomId);
+						break;
+					}
+					list[i].status = 1;
+				}
+			}
+		if(found == 0){
+			flag = 0;
+			printf("Loi: Khong tim thay phong %s!\n",list_book[x].roomId);
+		}
+	}while(flag != 1);
+	printf("moi ban nhap ten khach hang: ");
+	fgets(list_book[x].customerName,sizeof(list_book[x].customerName),stdin);
+	list_book[x].customerName[strcspn(list_book[x].customerName, "\n")] = 0;
+	do{// kiem tra so ngay o
+		printf("moi ban nhap so ngay o phong %s: ",list_book[x].roomId);
+		scanf("%d",&list_book[x].days);
+		getchar();
+		if(list_book[x].days <= 0){
+			printf("Loi: So ngay o phai lon hon 0!\n");
+			continue;
+		}
+		break;
+	}while(1);
+	do{// kiem tra ngay nhan phong
+		printf("moi ban nhap ngay nhan phong %s (DD/MM/YYYY): ",list_book[x].roomId);
+		scanf("%d/%d/%d",&day,&month,&year);
+		getchar();
+		if(day > 31 || day <= 0){
+			printf("Loi: Ngay nhan phong phai dung theo dinh dang (DD/MM/YYYY)\n");
+			continue;
+		}else if(month > 12 || month <= 0){
+			printf("Loi: Ngay nhan phong phai dung theo dinh dang (DD/MM/YYYY)\n");
+			continue;
+		}else if(year < 2025 || year > 2030 ){
+			printf("Loi: Ngay nhan phong phai dung theo dinh dang (DD/MM/YYYY)\n");
+			continue;
+		}
+		break;
+	}while(1);
+	for(int i = 0; i < n; i++){
+		if(strcmp(list_book[x].roomId, list[i].roomId) == 0){
+			list_book[x].totalCost = list[i].price * list_book[x].days;
+		}
+	}
+	sprintf(list_book[x].bookId,"%d",rand() % 10000);//in ra ngau nhien ma phong
+	printf("check-in thanh cong! Ma dat phong: %s\n",list_book[x].bookId);
+	printf("+--------+-------------------------+--------------------+----------+----------------------+\n");
+    printf("|%-8s|%-25s|%-20s|%-10s|%-22s|\n", "Phong", "Ten Khach","Ngay nhan","So ngay","Tong Tien");
+     printf("+--------+-------------------------+--------------------+----------+----------------------+\n");
+    printf("|%8s|%25s|%12d/%d/%d|%10d|%18.0lf VND|\n", list_book[x].roomId, list_book[x].customerName,day,month,year,list_book[x].days,list_book[x].totalCost);
+    printf("+--------+-------------------------+--------------------+----------+----------------------+\n");
+	x++;
 }
