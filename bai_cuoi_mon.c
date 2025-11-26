@@ -42,6 +42,7 @@ void show_room();
 void show_empty();
 void sort_down();
 void book_room();
+int valid_date_case7(int day, int month, int year, int flag);
 int main(){// 
 	int choice;
 	do{
@@ -326,21 +327,12 @@ void book_room(){// dat phong
 		break;
 	}while(1);
 	do{// kiem tra ngay nhan phong
+		flag = 1; 
 		printf("moi ban nhap ngay nhan phong %s (DD/MM/YYYY): ",list_book[x].roomId);
 		scanf("%d/%d/%d",&day,&month,&year);
 		getchar();
-		if(day > 31 || day <= 0){
-			printf("Loi: Ngay nhan phong phai dung theo dinh dang (DD/MM/YYYY)\n");
-			continue;
-		}else if(month > 12 || month <= 0){
-			printf("Loi: Ngay nhan phong phai dung theo dinh dang (DD/MM/YYYY)\n");
-			continue;
-		}else if(year < 2025 || year > 2030 ){
-			printf("Loi: Ngay nhan phong phai dung theo dinh dang (DD/MM/YYYY)\n");
-			continue;
-		}
-		break;
-	}while(1);
+		flag = valid_date_case7(day,month,year,flag);
+	}while(flag != 1);
 	for(int i = 0; i < n; i++){
 		if(strcmp(list_book[x].roomId, list[i].roomId) == 0){
 			list_book[x].totalCost = list[i].price * list_book[x].days;
@@ -351,7 +343,70 @@ void book_room(){// dat phong
 	printf("+--------+-------------------------+--------------------+----------+----------------------+\n");
     printf("|%-8s|%-25s|%-20s|%-10s|%-22s|\n", "Phong", "Ten Khach","Ngay nhan","So ngay","Tong Tien");
      printf("+--------+-------------------------+--------------------+----------+----------------------+\n");
-    printf("|%8s|%25s|%12d/%d/%d|%10d|%18.0lf VND|\n", list_book[x].roomId, list_book[x].customerName,day,month,year,list_book[x].days,list_book[x].totalCost);
+    printf("|%8s|%25s|%13d/%d/%d|%10d|%18.0lf VND|\n", list_book[x].roomId, list_book[x].customerName,day,month,year,list_book[x].days,list_book[x].totalCost);
     printf("+--------+-------------------------+--------------------+----------+----------------------+\n");
 	x++;
+}
+int valid_date_case7(int day, int month, int year, int flag){//kiem tra dieu kien khi nhap ngay nhan phong cua booking
+	if(month <= 0 || month > 12 ){
+		printf("Thang chi có tu 1->12 thoi!\n");
+		flag = 0;
+		return flag;
+	}else if(year < 2025){
+		printf("Khong the nhap nam truoc nam 2025!\n");
+		flag = 0;
+		return flag;
+	}else if(year == 2025){
+		if(month < 12){
+			printf("Nam 2025 chi co the dat phong tu thang 12 tro di!\n");
+			flag = 0;
+			return flag;
+		}
+	}
+	switch(month){
+		case 1:
+		case 3:
+		case 5:
+		case 7:
+		case 8:
+		case 10:
+		case 12:
+			if(day <= 0 || day > 31){
+				printf("Moi ban nhap lai so ngay co the co trong thang %d!\n",month);
+				flag = 0;
+				return flag;
+			}
+			break;
+		case 4:
+		case 6:
+		case 9:
+		case 11:
+			if(day <= 0 || day > 30){
+				printf("Moi ban nhap lai so ngay co the co trong thang %d!\n",month);
+				flag = 0;
+				return flag;
+			}
+			break;
+		case 2:
+			if(year % 400 == 0 || year % 4 == 0 && year % 100 != 0){
+				if(day <= 0 || day > 29){
+					printf("Moi ban nhap lai!\n");
+					flag = 0;
+					return flag;
+				}
+			}else{
+				if(day <= 0 || day > 28){
+					if(day == 29){
+						printf("Nam %d khong phai nam nhuan, moi ban nhap lai!\n",year);
+						flag = 0;
+						return flag;
+					}
+					printf("Moi ban nhap lai so ngay co the co trong thang %d!\n",2);
+					flag = 0;
+					return flag;
+				}
+			}
+		}
+	flag = 1;
+	return flag;
 }
