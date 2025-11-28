@@ -323,9 +323,18 @@ void book_room(){// dat phong
 			printf("Loi: Khong tim thay phong %s!\n",list_book[x].roomId);
 		}
 	}while(flag != 1);
-	printf("moi ban nhap ten khach hang: ");
-	fgets(list_book[x].customerName,sizeof(list_book[x].customerName),stdin);
-	list_book[x].customerName[strcspn(list_book[x].customerName, "\n")] = 0;
+	do{
+		flag = 1;
+		printf("moi ban nhap ten khach hang: ");
+		fgets(list_book[x].customerName,sizeof(list_book[x].customerName),stdin);
+		list_book[x].customerName[strcspn(list_book[x].customerName, "\n")] = 0;
+		if(strlen(list_book[x].customerName) == 0){
+			printf("ten khanh hang khong duoc de trong!\n");
+			flag = 0;
+			continue;
+		}
+		break;
+	}while(1);
 	do{// kiem tra so ngay o
 		printf("moi ban nhap so ngay o phong %s: ",list_book[x].roomId);
 		scanf("%d",&list_book[x].days);
