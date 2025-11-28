@@ -9,7 +9,7 @@ struct Room {
 	double price;
 	int status; 
 };
-struct Room list[] = {
+struct Room list[MAX] = {
 	{"101", 1, 350000, 1},
 	{"234", 2, 400000, 1},
 	{"135", 1, 200000, 1},
@@ -24,16 +24,27 @@ struct Room list[] = {
 	{"821", 1, 710000, 1},
 	{"900", 2, 930000, 0}
 };
-int n = sizeof(list)/sizeof(list[0]);
+int n = 13;
 struct Booking {
-	char bookId[20];
 	char roomId[5];
 	char customerName[50];
 	int days;
 	double totalCost;
+	char bookId[20];
 };
-struct Booking list_book[MAX];
-int x = 0;
+struct Booking list_book[MAX] = {
+	{"132","Nguyen Van A",5,1500000}
+};
+int x = 1;
+struct Date {
+	int day;
+	int month;
+	int year;
+};
+struct Date date[MAX]={
+	{12,10,2025}
+};
+int size = 1;
 void display();
 void add_room();
 void update_room();
@@ -245,7 +256,7 @@ void show_empty(){// hien thi phong trong cua tung loai phong
 				return;
 			}
 	printf("+--------+-------------------------+--------------------+-----------+\n");
-	printf("|%-5s|%-25s|%-20s|%-11s|\n", "Ma phong", "Loai phong","Gia phong","Trang thai");
+	printf("|%-8s|%-25s|%-20s|%-11s|\n", "Ma phong", "Loai phong","Gia phong","Trang thai");
 	printf("+--------+-------------------------+--------------------+-----------+\n");
 	for(int i = 0; i < n; i++){
 		if(list[i].type == cpy_type && list[i].status == 0){
@@ -264,7 +275,7 @@ void sort_down(){// sap xep phong theo gia giam dan
 		for(int j = 0; j < n - 1 - i; j++){
 			if(list[j].price < list[j+1].price){
 				//gan cac bien vao bien trung gian
-				int temp1 = list[j].price;
+				double temp1 = list[j].price;
 				strcpy(temp2,list[j].roomId);
 				int temp3 = list[j].type;
 				int temp4 = list[j].status;
@@ -285,7 +296,6 @@ void sort_down(){// sap xep phong theo gia giam dan
 	show_room();
 }
 void book_room(){// dat phong 
-	int day,month,year;
 	int flag = 1;
 	do{// kiem tra co thoa man khi nhap ma phong khong?
 		int found = 0;
@@ -329,27 +339,28 @@ void book_room(){// dat phong
 	do{// kiem tra ngay nhan phong
 		flag = 1; 
 		printf("moi ban nhap ngay nhan phong %s (DD/MM/YYYY): ",list_book[x].roomId);
-		scanf("%d/%d/%d",&day,&month,&year);
+		scanf("%d/%d/%d",&date[size].day,&date[size].month,&date[size].year);
 		getchar();
-		flag = valid_date_case7(day,month,year,flag);
+		flag = valid_date_case7(date[size].day,date[size].month,date[size].year,flag);
 	}while(flag != 1);
 	for(int i = 0; i < n; i++){
 		if(strcmp(list_book[x].roomId, list[i].roomId) == 0){
 			list_book[x].totalCost = list[i].price * list_book[x].days;
 		}
 	}
-	sprintf(list_book[x].bookId,"%d",rand() % 10000);//in ra ngau nhien ma phong
+	sprintf(list_book[x].bookId,"%04d",rand() % 10000);//in ra ngau nhien ma phong
 	printf("check-in thanh cong! Ma dat phong: %s\n",list_book[x].bookId);
 	printf("+--------+-------------------------+--------------------+----------+----------------------+\n");
     printf("|%-8s|%-25s|%-20s|%-10s|%-22s|\n", "Phong", "Ten Khach","Ngay nhan","So ngay","Tong Tien");
      printf("+--------+-------------------------+--------------------+----------+----------------------+\n");
-    printf("|%8s|%25s|%13d/%d/%d|%10d|%18.0lf VND|\n", list_book[x].roomId, list_book[x].customerName,day,month,year,list_book[x].days,list_book[x].totalCost);
+    printf("|%8s|%25s|%12d/%d/%d|%10d|%18.0lf VND|\n", list_book[x].roomId, list_book[x].customerName,date[size].day,date[size].month,date[size].year,list_book[x].days,list_book[x].totalCost);
     printf("+--------+-------------------------+--------------------+----------+----------------------+\n");
 	x++;
+	size++;
 }
 int valid_date_case7(int day, int month, int year, int flag){//kiem tra dieu kien khi nhap ngay nhan phong cua booking
 	if(month <= 0 || month > 12 ){
-		printf("Thang chi có tu 1->12 thoi!\n");
+		printf("Thang chi co tu 1->12 thoi!\n");
 		flag = 0;
 		return flag;
 	}else if(year < 2025){
@@ -388,7 +399,7 @@ int valid_date_case7(int day, int month, int year, int flag){//kiem tra dieu kie
 			}
 			break;
 		case 2:
-			if(year % 400 == 0 || year % 4 == 0 && year % 100 != 0){
+			if((year % 400 == 0)|| (year % 4 == 0 && year % 100 != 0)){
 				if(day <= 0 || day > 29){
 					printf("Moi ban nhap lai!\n");
 					flag = 0;
@@ -410,3 +421,4 @@ int valid_date_case7(int day, int month, int year, int flag){//kiem tra dieu kie
 	flag = 1;
 	return flag;
 }
+
