@@ -25,26 +25,22 @@ struct Room list[MAX] = {
 	{"900", 2, 930000, 0}
 };
 int n = 13;
+struct Date {
+	int day;
+	int month;
+	int year;
+};
 struct Booking {
 	char roomId[5];
 	char customerName[50];
 	int days;
 	double totalCost;
 	char bookId[20];
+	struct Date date;
 };
 struct Booking list_book[MAX] = {
-	{"132","Nguyen Van A",5,1500000}
 };
 int x = 1;
-struct Date {
-	int day;
-	int month;
-	int year;
-};
-struct Date date[MAX]={
-	{12,10,2025}
-};
-int size = 1;
 void display();
 void add_room();
 void update_room();
@@ -348,9 +344,9 @@ void book_room(){// dat phong
 	do{// kiem tra ngay nhan phong
 		flag = 1; 
 		printf("moi ban nhap ngay nhan phong %s (DD/MM/YYYY): ",list_book[x].roomId);
-		scanf("%d/%d/%d",&date[size].day,&date[size].month,&date[size].year);
+		scanf("%d/%d/%d",&list_book[x].date.day,&list_book[x].date.month,&list_book[x].date.year);
 		getchar();
-		flag = valid_date_case7(date[size].day,date[size].month,date[size].year,flag);
+		flag = valid_date_case7(list_book[x].date.day,list_book[x].date.month,list_book[x].date.year,flag);
 	}while(flag != 1);
 	for(int i = 0; i < n; i++){
 		if(strcmp(list_book[x].roomId, list[i].roomId) == 0){
@@ -362,10 +358,9 @@ void book_room(){// dat phong
 	printf("+--------+-------------------------+--------------------+----------+----------------------+\n");
     printf("|%-8s|%-25s|%-20s|%-10s|%-22s|\n", "Phong", "Ten Khach","Ngay nhan","So ngay","Tong Tien");
      printf("+--------+-------------------------+--------------------+----------+----------------------+\n");
-    printf("|%8s|%25s|%12d/%d/%d|%10d|%18.0lf VND|\n", list_book[x].roomId, list_book[x].customerName,date[size].day,date[size].month,date[size].year,list_book[x].days,list_book[x].totalCost);
+    printf("|%8s|%25s|%12d/%d/%d|%10d|%18.0lf VND|\n", list_book[x].roomId, list_book[x].customerName,list_book[x].date.day,list_book[x].date.month,list_book[x].date.year,list_book[x].totalCost);
     printf("+--------+-------------------------+--------------------+----------+----------------------+\n");
 	x++;
-	size++;
 }
 int valid_date_case7(int day, int month, int year, int flag){//kiem tra dieu kien khi nhap ngay nhan phong cua booking
 	if(month <= 0 || month > 12 ){
